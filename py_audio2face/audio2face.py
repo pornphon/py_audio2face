@@ -75,7 +75,8 @@ class Audio2Face(
             audio_file_path: str,
             output_path: str,
             fps: int = 60,
-            emotion_auto_detect: bool = True
+            emotion_auto_detect: bool = True, 
+            format: str = "usd" 
     ) -> str:
         """
         Generate the face animation from a single audio file.
@@ -91,9 +92,16 @@ class Audio2Face(
         self.set_root_path(audio_file_path)
         self.set_track(audio_file_path)
 
-        return self.export(output_path=output_path, fps=fps, emotion_auto_detect=emotion_auto_detect)
+        return self.export(output_path=output_path, fps=fps, emotion_auto_detect=emotion_auto_detect, format=format)
 
-    def audio2face_folder(self, input_folder: str, output_folder: str, fps: int = 60, emotion: bool = False) -> list:
+    def audio2face_folder(
+            self, 
+            input_folder: str, 
+            output_folder: str, 
+            fps: int = 60, 
+            emotion: bool = False, 
+            format: str = "usd" 
+        ) -> list:
         """
         Generate the face animations from all audio files in a folder.
         input_folder (str): Path to the folder containing the audio files.
@@ -119,7 +127,7 @@ class Audio2Face(
             outfile_name, ext = os.path.basename(af).rsplit(".", 1)
             outfile_name = f"{output_folder}/{outfile_name}_a2f_animation"
 
-            of = self.export(output_path=outfile_name, fps=fps, emotion_auto_detect=emotion)
+            of = self.export(output_path=outfile_name, fps=fps, emotion_auto_detect=emotion, format=format)
             output_files.append(of)
 
         return output_files
