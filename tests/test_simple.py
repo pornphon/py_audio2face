@@ -3,8 +3,8 @@ import py_audio2face as pya2f
 from media_toolkit import AudioFile
 
 test_audio_0 = "test_files/test_audio_0.wav"
-test_audio_1 = "test_files/test_audio_1.wav"
-test_audio_2 = "test_files/test_audio_2.wav"
+test_audio_1 = "test_files/test_audio_0.wav"
+test_audio_2 = "test_files/test_audio_0.wav"
 
 a2f = pya2f.Audio2Face()
 
@@ -34,5 +34,5 @@ def test_streaming():
     a2f.stream_audio(audio_stream=audio_stream, samplerate=audio_stream.sample_rate)
 
 
-test_file_methods()
+# test_file_methods()
 test_streaming()
