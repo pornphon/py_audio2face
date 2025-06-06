@@ -10,6 +10,7 @@ class _A2FGeneral:
     def load_scene(self: a2f.Audio2Face, usd_file_path: str = ""):
         # check if the scene is already loaded
         scene = self.get_scene()
+        print("Check scene if loaded")
         if usd_file_path in scene:
             return
 

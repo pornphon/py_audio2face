@@ -6,6 +6,8 @@ DEFAULT_OUTPUT_DIR = os.path.join(ROOT_DIR, "../output")
 ASSETS_DIR = os.path.join(ROOT_DIR, "assets")
 
 APP_DATA_DIR = os.getenv('LOCALAPPDATA')
+#C:\Users\MOO\AppData\Local\ov\pkg\audio2face-2023.2.0
+print("LOCALAPPDATA:"+APP_DATA_DIR)
 
 DEFAULT_PLAYER_INSTANCE = "/World/audio2face/Player"
 DEFAULT_SOLVER_INSTANCE = "/World/audio2face/BlendshapeSolve"
