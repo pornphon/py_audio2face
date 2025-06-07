@@ -30,7 +30,9 @@ def test_file_methods():
 def test_streaming():
     # Load audio file and get an audio stream generator
     my_audio = AudioFile().from_file(test_audio_2)
+
     audio_stream = my_audio.to_stream()
+    print(f"samplerage: {audio_stream.sample_rate}")
     # Stream the audio to the Audio2Face StreamingPlayer
     a2f.stream_audio(audio_stream=audio_stream, samplerate=audio_stream.sample_rate)
 
