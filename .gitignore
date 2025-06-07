@@ -26,3 +26,5 @@ build/
 
 # Ignore test files
 tests/test_files/*
+
+.evn
