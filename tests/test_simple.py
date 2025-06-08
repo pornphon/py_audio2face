@@ -1,5 +1,5 @@
 ## py_audio2face version 0.1.3
-## แก้ไข  soundfile.read() ไม่รองรับ object แบบ FileContentBuffer 
+## แก้ไข  soundfile.read() ใน audio_file.py ที่ไม่รองรับ object แบบ FileContentBuffer  
 import py_audio2face as pya2f
 from media_toolkit import AudioFile
 
