@@ -28,3 +28,4 @@ build/
 tests/test_files/*
 
 .env
+myenv/

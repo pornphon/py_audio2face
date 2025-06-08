@@ -37,5 +37,5 @@ def test_streaming():
     a2f.stream_audio(audio_stream=audio_stream, samplerate=audio_stream.sample_rate)
 
 
-# test_file_methods()
+test_file_methods()
 test_streaming()

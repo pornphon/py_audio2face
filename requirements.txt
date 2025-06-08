@@ -1,6 +1,7 @@
 importlib_resources
 media_toolkit
 py_audio2face
+py_audio2face[streaming]
 soundfile
 azure-cognitiveservices-speech
 load_dotenv
