@@ -22,11 +22,11 @@ SPEECH_KEY = os.getenv("AZURE_SPEECH_KEY")
 SERVICE_REGION = os.getenv("AZURE_SPEECH_REGION")
 
 #load audio2face + defaults file
-a2f = pya2f.Audio2Face()
-mark_usd_file= importlib_resources.files('py_audio2face') / 'assets' / 'mark_arkit_solved_streaming.usd'
-a2f.start_headless_server()
-if a2f.loaded_scene != mark_usd_file:
-    a2f.load_scene(mark_usd_file)
+# a2f = pya2f.Audio2Face()
+# mark_usd_file= importlib_resources.files('py_audio2face') / 'assets' / 'mark_arkit_solved_streaming.usd'
+# a2f.start_headless_server()
+# if a2f.loaded_scene != mark_usd_file:
+#     a2f.load_scene(mark_usd_file)
 
 
 
@@ -132,7 +132,8 @@ def stream_audio_to_a2f_via_grpc(
                 # --- ส่วนที่แก้ไข ---
                 # 3. แปลง int16 array เป็น float32 array และทำ Normalization
                 #    (ค่า int16 อยู่ระหว่าง -32768 ถึง 32767, เราจึงหารด้วย 32768.0 เพื่อให้อยู่ในช่วง -1.0 ถึง 1.0)
-                audio_samples_float32 = audio_samples_int16.astype(np.float32) / 32768.0
+                audio_samples_float32 = (audio_samples_int16.astype(np.float32) / 32768.0)*2
+                audio_samples_float32 = np.clip(audio_samples_float32, -1.0, 1.0)  # ป้องกันค่าเกินช่วง
                 
                 # 4. แปลง float32 array กลับไปเป็น bytes
                 new_chunk_bytes = audio_samples_float32.tobytes()
@@ -152,13 +153,45 @@ def stream_audio_to_a2f_via_grpc(
         return response.success
 
 
+
+
+
+def tts_to_a2f(text2speak: str, samplerate: int = 48000, voice_name: str = "th-TH-AcharaNeural"):
+    """
+    ฟังก์ชันหลักสำหรับเริ่มการสังเคราะห์เสียงจาก Azure และส่งไปยัง Audio2Face
+    """
+    print(f"Starting TTS synthesis for text: '{text2speak}'")
+    
+    tts_thread = threading.Thread(
+        target=start_azure_tts_synthesis,
+        args=(text2speak, samplerate, voice_name)
+    )
+    tts_thread.start()
+
+    try:
+        stream_audio_to_a2f_via_grpc(samplerate=samplerate)
+    except grpc.RpcError as e:
+        print(f"\nAn gRPC error occurred: {e.details()}")
+        print("Please ensure Audio2Face application is running and the gRPC service is enabled.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+    tts_thread.join()
+    print("\nProgram finished.")
+
+
+
+
 # --- 4. Main Execution (เหมือนเดิม) ---
 if __name__ == "__main__":
     # แนะนำให้ใช้ข้อความยาวๆ ที่มีการเว้นวรรคปกติ
     TEXT_TO_SPEAK = "This is a much more robust implementation that actively filters out silent audio chunks before sending them to Audio2Face."
     
-
-    VOICE = "en-US-JennyNeural" # "th-TH-AcharaNeural"
+    # VOICE = "en-US-JennyNeural"
+    VOICE = "th-TH-NiwatNeural"
+    #th-TH-PremwadeeNeural (Female)
+    #th-TH-NiwatNeural (Male)
+    #th-TH-AcharaNeural (Female)
     SAMPLE_RATE = 48000
 
     tts_thread = threading.Thread(
@@ -166,8 +199,6 @@ if __name__ == "__main__":
         args=(TEXT_TO_SPEAK, SAMPLE_RATE, VOICE)
     )
     tts_thread.start()
-
-    time.sleep(2)
 
     try:
         stream_audio_to_a2f_via_grpc(samplerate=SAMPLE_RATE)
